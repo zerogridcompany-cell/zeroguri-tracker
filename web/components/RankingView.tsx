@@ -8,14 +8,17 @@ import { useCallback, useEffect, useState } from "react";
 import { functionsUrl } from "@/lib/supabase";
 import { getAccessToken } from "@/lib/auth";
 import { formatYen, formatNumber } from "@/lib/format";
+import { PostingCalendar, type Posting } from "@/components/PostingCalendar";
 
 interface RankEntry {
   rank: number;
+  userId: string;
   name: string;
   internalId: string;
   views: number;
   earnings: number;
   videos: number;
+  posting?: Posting | null;
 }
 interface RankingData {
   byEarnings: RankEntry[];
@@ -24,6 +27,8 @@ interface RankingData {
 export function RankingView() {
   const [data, setData] = useState<RankingData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // タップで開いている行（userId）。選択したユーザーの投稿状況を下に表示する。
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -59,40 +64,64 @@ export function RankingView() {
         <div className="py-16 text-center text-sm text-faint">まだランキングがありません</div>
       ) : (
         <div>
-          {rows.map((r, i) => (
-            <div
-              key={r.internalId + "-" + r.rank}
-              className={"zg-row" + (i < rows.length - 1 ? " hairline" : "")}
-            >
-              {/* 左: 順位 + 名前 + 内部ID */}
-              <div className="flex min-w-0 items-center gap-3">
-                <span
-                  className={
-                    "w-7 shrink-0 font-display text-lg tabular-nums" +
-                    (r.rank <= 3 ? " text-accent" : " text-mid")
-                  }
+          {rows.map((r, i) => {
+            const open = openId === r.userId;
+            return (
+              <div
+                key={r.internalId + "-" + r.rank}
+                className={i < rows.length - 1 ? "hairline" : ""}
+              >
+                {/* 行: タップで投稿状況を開閉 */}
+                <button
+                  type="button"
+                  onClick={() => setOpenId(open ? null : r.userId)}
+                  aria-expanded={open}
+                  className="zg-row w-full text-left"
                 >
-                  {r.rank}
-                </span>
-                <div className="min-w-0">
-                  <div className="truncate text-sm text-sumi">{r.name}</div>
-                  <div className="truncate font-display text-[10px] text-faint">
-                    {r.internalId}
+                  {/* 左: 順位 + 名前 + 内部ID */}
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span
+                      className={
+                        "w-7 shrink-0 font-display text-lg tabular-nums" +
+                        (r.rank <= 3 ? " text-accent" : " text-mid")
+                      }
+                    >
+                      {r.rank}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm text-sumi">{r.name}</div>
+                      <div className="truncate font-display text-[10px] text-faint">
+                        {r.internalId}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* 右: 稼いだ額（主）+ 再生数（下に小さく） */}
-              <div className="shrink-0 text-right">
-                <div className="font-display text-base font-semibold tabular-nums text-sumi">
-                  {formatYen(r.earnings)}
-                </div>
-                <div className="font-display text-[10px] text-faint">
-                  再生 {formatNumber(r.views)}
-                </div>
+                  {/* 右: 稼いだ額（主）+ 再生数（下に小さく） */}
+                  <div className="shrink-0 text-right">
+                    <div className="font-display text-base font-semibold tabular-nums text-sumi">
+                      {formatYen(r.earnings)}
+                    </div>
+                    <div className="font-display text-[10px] text-faint">
+                      再生 {formatNumber(r.views)}
+                    </div>
+                  </div>
+                </button>
+
+                {/* 開いたら: 選択ユーザーの投稿状況 */}
+                {open && (
+                  <div className="pb-4 pt-1">
+                    {r.posting ? (
+                      <PostingCalendar posting={r.posting} />
+                    ) : (
+                      <div className="rounded-xl border border-line p-3 text-center text-[11px] text-faint">
+                        投稿状況のデータがありません
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
