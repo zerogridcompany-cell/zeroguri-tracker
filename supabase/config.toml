@@ -1,0 +1,101 @@
+# ZeroGuri Tracker — Supabase local config
+project_id = "zeroguri-tracker"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/dashboard"]
+jwt_expiry = 3600
+enable_signup = true
+
+# 本体ログイン: Google 主 / Apple 併置（iOS 審査要件対策）
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+
+[auth.external.apple]
+enabled = true
+client_id = "env(APPLE_CLIENT_ID)"
+secret = "env(APPLE_SECRET)"
+
+[functions.youtube-oauth-url]
+verify_jwt = true
+[functions.tiktok-oauth-url]
+verify_jwt = true
+[functions.instagram-oauth-url]
+verify_jwt = true
+[functions.oauth-callback]
+verify_jwt = false        # provider からの redirect を受けるため JWT 無し（state で検証）
+[functions.link-challenge-create]
+verify_jwt = true         # 無審査ルート（YT/IG）: チャレンジコード発行
+[functions.link-challenge-verify]
+verify_jwt = true         # 無審査ルート（YT/IG）: bio/概要欄コード照合 → 連携作成
+[functions.unlink-account]
+verify_jwt = true         # 本人の連携解除（service_role で確実に削除）
+[functions.drive-upload-init]
+verify_jwt = true         # 動画提出のアップロード先(Drive)を用意
+[functions.buffer-post]
+verify_jwt = true         # Buffer 予約投稿（オーガナイザー専用）
+[functions.organizer-submissions]
+verify_jwt = true         # 提出動画の一覧（オーガナイザー）
+[functions.submission-approve]
+verify_jwt = true         # 提出の承認/却下→Buffer予約
+[functions.submission-ack]
+verify_jwt = true         # 本人が却下を確認済みに
+[functions.submission-schedule]
+verify_jwt = true         # 本人が承認済み提出を予約投稿
+[functions.buffer-sync]
+verify_jwt = true         # Bufferチャンネル取得→アカウント紐付け（主催者）
+[functions.buffer-link-self]
+verify_jwt = true         # 本人がBuffer接続済みアカウントを紐付け
+[functions.buffer-connect-self]
+verify_jwt = true         # 本人が自分のBufferトークンで連携
+[functions.revoke-oauth-token]
+verify_jwt = true
+[functions.register-tracked-video]
+verify_jwt = true
+[functions.tracking-tick]
+verify_jwt = false        # pg_cron / service_role から叩く
+[functions.sync-posted-videos]
+verify_jwt = false        # pg_cron（公開投稿→自動トラッキング）
+[functions.discord-notify]
+verify_jwt = false        # 提出→Discord通知（DBトリガから invoke）
+[functions.refresh-tokens]
+verify_jwt = false
+[functions.dashboard-summary]
+verify_jwt = true
+[functions.organizer-summary]
+verify_jwt = true
+[functions.organizer-members]
+verify_jwt = true
+[functions.organizer-ledger]
+verify_jwt = true
+[functions.ranking]
+verify_jwt = true
+[functions.delete-account]
+verify_jwt = true
+[functions.organizer-payouts]
+verify_jwt = true
+
+[edge_runtime]
+enabled = true
+policy = "oneshot"
+[functions.video-snapshots]
+verify_jwt = true

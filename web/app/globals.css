@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== ZeroGuri 和デザイン（明朝＋Playfair / 墨・朱 / 3テーマ）=====
+   原則: フラット / 巨大見出し＋tinyラベル / 空間とhairlineで区切る /
+        朱(#A8443A)は"今activeな状態"だけ / 太字は font-semibold まで（font-bold 禁止）。 */
+
+:root,
+[data-theme="default"] {
+  --bg: #f4f3f1;       /* 背景（和紙クリーム） */
+  --sumi: #1d1d1f;     /* 墨 */
+  --mid: #5b5b60;      /* 中間 */
+  --faint: #9b9ba1;    /* 淡 */
+  --line: rgba(29, 29, 31, 0.12);
+  --accent: #a8443a;   /* 朱 */
+  --accent-2: #c2715a; /* パステル折り紙の補助朱 */
+}
+[data-theme="chic"] {
+  --bg: #ecebe3;       /* 和紙 */
+  --sumi: #1b2620;     /* 深緑墨 */
+  --mid: #4a5a50;
+  --faint: #8a958c;
+  --line: rgba(27, 38, 32, 0.14);
+  --accent: #1f6f4e;   /* 緑 */
+  --accent-2: #b08d2e; /* 金 */
+}
+[data-theme="mono"] {
+  --bg: #f3f3f3;
+  --sumi: #1d1d1f;
+  --mid: #5b5b60;
+  --faint: #9b9ba1;
+  --line: rgba(29, 29, 31, 0.12);
+  --accent: #3a3a3a;   /* グレースケール（差し色なし） */
+  --accent-2: #6b6b6b;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--sumi);
+  -webkit-font-smoothing: antialiased;
+}
+/* 日本語＝明朝（しっぽり明朝） */
+body {
+  font-family: var(--font-mincho), "Hiragino Mincho ProN", "YuMincho", serif;
+}
+
+@layer components {
+  /* 英語見出し＝Playfair Display */
+  .font-display {
+    font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+  }
+
+  /* 旧 GlassCard を素のセクションに（カードを使わない） */
+  .glass { @apply bg-transparent; }
+  .glass-hover { @apply transition-colors; }
+
+  /* セクションラベル（英字）= Playfair, uppercase, faint */
+  .zg-eyebrow {
+    @apply font-display text-[11px] font-semibold uppercase tracking-[0.22em];
+    color: var(--faint);
+  }
+  /* セクションラベル（日本語）= 明朝, kerning 無し */
+  .zg-eyebrow-ja {
+    @apply text-[12px] font-medium;
+    color: var(--faint);
+  }
+  /* 巨大見出し数字 = Playfair semibold */
+  .zg-hero {
+    @apply font-display font-semibold tabular-nums tracking-tight;
+    color: var(--sumi);
+    font-size: clamp(40px, 9vw, 56px);
+    line-height: 1;
+  }
+  /* detail row */
+  .zg-row { @apply flex items-center justify-between gap-3 py-3.5; }
+  /* 0.5pt hairline */
+  .hairline { border-bottom: 0.5px solid var(--line); }
+
+  /* 副次CTA（outline capsule） */
+  .zg-capsule {
+    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors;
+    border: 0.5px solid var(--line);
+    color: var(--mid);
+  }
+  .zg-capsule:hover { border-color: var(--mid); }
+  /* primary CTA（朱 fill） */
+  .zg-capsule-accent {
+    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-white transition-opacity;
+    background: var(--accent);
+  }
+  .zg-capsule-accent:hover { opacity: 0.9; }
+
+  /* 状態 pill */
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase; }
+
+  /* フラット入力（下線） */
+  .zg-input {
+    @apply w-full bg-transparent px-0 py-2 text-sm;
+    border-bottom: 0.5px solid var(--line);
+    color: var(--sumi);
+  }
+  .zg-input::placeholder { color: var(--faint); }
+  .zg-input:focus { outline: none; border-color: var(--accent); }
+}
