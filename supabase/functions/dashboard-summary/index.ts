@@ -111,10 +111,15 @@ Deno.serve(async (req) => {
       .from("v_user_totals").select("billable_amount").eq("user_id", user.id).maybeSingle();
     const userNet = num(ut?.billable_amount);
 
-    // 毎日投稿トラッキング（自分の投稿日 → 連続日数・今日投稿・直近14日）
+    // 毎日投稿トラッキング（自分の投稿日 → 連続日数・今日投稿本数・直近14日の本数）
     const { data: pd } = await db
-      .from("v_user_posting_days").select("posted_date").eq("user_id", user.id);
-    const posting = postingSummary(new Set((pd ?? []).map((r) => r.posted_date as string)));
+      .from("v_user_posting_days").select("posted_date, posts").eq("user_id", user.id);
+    const postingCounts = new Map<string, number>();
+    for (const r of pd ?? []) {
+      const d = r.posted_date as string;
+      postingCounts.set(d, (postingCounts.get(d) ?? 0) + Number(r.posts ?? 0));
+    }
+    const posting = postingSummary(postingCounts);
 
     const campaigns = [...campaignIds].map((cid) => {
       const vids = (videosByCampaign.get(cid) ?? []).map((r) => {

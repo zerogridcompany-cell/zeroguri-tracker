@@ -82,8 +82,12 @@ export interface DashboardData {
 
 // 毎日投稿トラッキング
 export interface PostingData {
-  days: { date: string; posted: boolean }[];
+  days: { date: string; posted: boolean; count: number }[];
   streak: number;
   postedToday: boolean;
+  todayCount: number;
+  total14: number;
+  avgPerDay: number;
+  maxCount: number;
   lastPostedDate: string | null;
 }

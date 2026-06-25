@@ -32,3 +32,7 @@ deploy/keys.env
 
 # client business data (keep out of public repo)
 docs/view-growth-report.html
+
+# build cache
+web/tsconfig.tsbuildinfo
+*.tsbuildinfo

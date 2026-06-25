@@ -30,16 +30,17 @@ Deno.serve(async (req) => {
         .order("last_views", { ascending: false })
         .limit(800),
       db.from("linked_accounts").select("user_id, platform, handle, status"),
-      db.from("v_user_posting_days").select("user_id, posted_date"),
+      db.from("v_user_posting_days").select("user_id, posted_date, posts"),
     ]);
 
-    // ユーザー→投稿日(JST)の集合（毎日投稿トラッキング）
-    const postingMap = new Map<string, Set<string>>();
+    // ユーザー→(JST日付→投稿本数)。同一日が複数案件に跨る場合は合算（「1日何本」表示用）。
+    const postingMap = new Map<string, Map<string, number>>();
     for (const r of postingRes.data ?? []) {
       const uid = r.user_id as string;
-      const set = postingMap.get(uid) ?? new Set<string>();
-      set.add(r.posted_date as string);
-      postingMap.set(uid, set);
+      const m = postingMap.get(uid) ?? new Map<string, number>();
+      const d = r.posted_date as string;
+      m.set(d, (m.get(d) ?? 0) + Number(r.posts ?? 0));
+      postingMap.set(uid, m);
     }
 
     // ユーザー→連携アカウント（platform/handle）。詳細画面でアカウントへ飛べるように。
@@ -129,7 +130,7 @@ Deno.serve(async (req) => {
         })),
         topVideos: (topMap.get(p.user_id as string) ?? []).slice(0, 5),
         videos: topMap.get(p.user_id as string) ?? [],
-        posting: postingSummary(postingMap.get(p.user_id as string) ?? new Set<string>()),
+        posting: postingSummary(postingMap.get(p.user_id as string) ?? new Map<string, number>()),
       };
     });
 

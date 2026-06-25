@@ -99,9 +99,13 @@ interface Member {
   topVideos: MemberTopVideo[];
   videos: MemberTopVideo[];
   posting?: {
-    days: { date: string; posted: boolean }[];
+    days: { date: string; posted: boolean; count: number }[];
     streak: number;
     postedToday: boolean;
+    todayCount: number;
+    total14: number;
+    avgPerDay: number;
+    maxCount: number;
     lastPostedDate: string | null;
   };
 }
@@ -547,9 +551,21 @@ export function OrganizerDashboard() {
                                 ? "bg-accent/15 text-accent"
                                 : "bg-[#A8443A]/10 text-[#A8443A]")
                             }
-                            title={m.posting.postedToday ? "今日 投稿済み" : "今日 未投稿"}
+                            title={
+                              m.posting.postedToday
+                                ? `今日 ${m.posting.todayCount}本投稿・連続${m.posting.streak}日`
+                                : "今日 未投稿"
+                            }
                           >
-                            {m.posting.postedToday ? `連続${m.posting.streak}日` : "今日未投稿"}
+                            {m.posting.postedToday ? `今日${m.posting.todayCount}本・連続${m.posting.streak}日` : "今日未投稿"}
+                          </span>
+                        )}
+                        {m.posting && (
+                          <span
+                            className="shrink-0 font-display text-[9px] tabular-nums text-faint"
+                            title="直近14日の1日あたり平均投稿本数"
+                          >
+                            平均{m.posting.avgPerDay}本/日
                           </span>
                         )}
                       </div>
