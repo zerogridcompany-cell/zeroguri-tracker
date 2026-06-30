@@ -103,6 +103,8 @@ interface Member {
     streak: number;
     postedToday: boolean;
     lastPostedDate: string | null;
+    todayCount?: number;
+    recentCount?: number;
   };
 }
 interface MembersData {
@@ -573,9 +575,45 @@ export function OrganizerDashboard() {
                       </div>
                     </button>
 
+                    {/* 行を開かなくても各SNSアカウントへ直接飛べる＋投稿本数（ミニマル） */}
+                    {!isOpen &&
+                      (m.accounts.some((a) => profileUrl(a.platform, a.handle)) ||
+                        (m.posting && (m.posting.recentCount ?? 0) > 0)) && (
+                      <div className="flex items-center justify-between gap-2 px-3 pb-2">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {m.accounts.map((a, j) => {
+                            const href = profileUrl(a.platform, a.handle);
+                            return href ? (
+                              <a
+                                key={a.platform + j}
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="zg-capsule inline-flex items-center gap-1 px-2 py-0.5 text-[11px] hover:text-accent"
+                                title={`${a.handle ?? a.platform} を開く`}
+                              >
+                                <PlatformIcon platform={a.platform} size={13} />
+                                <span className="max-w-[120px] truncate">{a.handle ?? a.platform}</span>
+                              </a>
+                            ) : null;
+                          })}
+                        </div>
+                        {m.posting && (m.posting.recentCount ?? 0) > 0 && (
+                          <span className="shrink-0 text-[10px] text-faint" title="今日 / 直近7日の投稿本数">
+                            今日{m.posting.todayCount ?? 0}本・7日{m.posting.recentCount ?? 0}本
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     {isOpen && (
                       <div className="space-y-5 pb-5">
                         {/* 毎日投稿トラッキング */}
+                        {m.posting && (
+                          <div className="text-[11px] text-faint">
+                            投稿本数：今日 {m.posting.todayCount ?? 0}本 ・ 直近7日 {m.posting.recentCount ?? 0}本
+                          </div>
+                        )}
                         <PostingCalendar posting={m.posting} />
 
                         {/* 連携アカウント（クリックで各SNSのプロフィールへ） */}

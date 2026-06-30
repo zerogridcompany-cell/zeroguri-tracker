@@ -13,12 +13,22 @@ export interface PostingSummary {
   streak: number; // 連続投稿日数（今日 or 昨日起点で連続して投稿してる日数）
   postedToday: boolean;
   lastPostedDate: string | null;
+  todayCount: number; // 今日の投稿本数（counts 未指定時は 0）
+  recentCount: number; // 直近7日の投稿本数合計（counts 未指定時は 0）
 }
 
-/** posted の JST 日付集合（Set<YYYY-MM-DD>）から投稿サマリを作る。 */
-export function postingSummary(dates: Set<string>): PostingSummary {
+/**
+ * posted の JST 日付集合（Set<YYYY-MM-DD>）から投稿サマリを作る。
+ * counts（date→本数）を渡すと todayCount / recentCount も埋める（未指定なら 0）。
+ */
+export function postingSummary(dates: Set<string>, counts?: Map<string, number>): PostingSummary {
   const today = jstDayStr(0);
   const postedToday = dates.has(today);
+
+  // 投稿本数（counts 指定時のみ）。todayCount=今日 / recentCount=直近7日合計。
+  const todayCount = counts?.get(today) ?? 0;
+  let recentCount = 0;
+  if (counts) for (let i = 0; i < 7; i++) recentCount += counts.get(jstDayStr(i)) ?? 0;
 
   // 連続日数: 今日投稿済みなら今日から、未投稿なら昨日から遡って連続を数える。
   let streak = 0;
@@ -39,5 +49,5 @@ export function postingSummary(dates: Set<string>): PostingSummary {
     if (dates.has(d)) { lastPostedDate = d; break; }
   }
 
-  return { days, streak, postedToday, lastPostedDate };
+  return { days, streak, postedToday, lastPostedDate, todayCount, recentCount };
 }

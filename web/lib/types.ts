@@ -86,4 +86,6 @@ export interface PostingData {
   streak: number;
   postedToday: boolean;
   lastPostedDate: string | null;
+  todayCount?: number; // 今日の投稿本数
+  recentCount?: number; // 直近7日の投稿本数合計
 }
