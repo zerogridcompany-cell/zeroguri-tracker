@@ -93,7 +93,9 @@ export async function processGroupApproval(
       mediaType: (t.media_type as string) === "image" ? "image" : "video",
       igType,
       platform,
-      schedulingType: "notification",
+      // TikTok はスマホ通知(リマインダー)に依存すると端末リンク切れで投稿が止まるため、
+      // Buffer に直接公開させる(automatic)。IG は接続が健全である必要があるため従来どおり notification。
+      schedulingType: platform === "tiktok" ? "automatic" : "notification",
       dueAt: time ?? undefined,
       channelId: channelId ?? undefined,
       token: userToken,
