@@ -29,7 +29,8 @@ Deno.serve(async (req) => {
     const mediaUrl = (b.mediaUrl as string)?.trim();
     const mediaType = (b.mediaType as string) === "video" ? "video" : "image";
     const igType = ["post", "reel", "story"].includes(b.igType as string) ? (b.igType as string) : "post";
-    const schedulingType = (b.schedulingType as string) === "automatic" ? "automatic" : "notification";
+    // 端末未リンクのため notification(リマインダー)は機能しない。既定は automatic(直接公開)。明示時のみ notification。
+    const schedulingType = (b.schedulingType as string) === "notification" ? "notification" : "automatic";
     const saveToDraft = Boolean(b.saveToDraft);
     if (!mediaUrl) return error("メディアURLが必要です（Instagram は画像/動画が必須）", 400);
 

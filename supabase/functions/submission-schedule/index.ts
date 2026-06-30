@@ -81,7 +81,8 @@ Deno.serve(async (req) => {
       mediaUrl: sub.public_url as string,
       mediaType: (sub.media_type as string) === "image" ? "image" : "video",
       igType,
-      schedulingType: "notification",
+      // 端末未リンクのため notification(リマインダー)は機能しない。automatic(直接公開)を使う。
+      schedulingType: "automatic",
       dueAt: scheduledAt,
       channelId,
       token: userToken,
