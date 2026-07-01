@@ -591,7 +591,7 @@ export function OrganizerDashboard() {
 
                     {isOpen && (
                       <div className="space-y-5 pb-5">
-                        {/* 毎日投稿トラッキング */}
+                        {/* 毎日投稿トラッキング（目標は zeroguri-report で設定） */}
                         <PostingCalendar posting={m.posting} />
 
                         {/* 連携アカウント（クリックで各SNSのプロフィールへ） */}

@@ -93,7 +93,11 @@ export async function processGroupApproval(
       mediaType: (t.media_type as string) === "image" ? "image" : "video",
       igType,
       platform,
-      schedulingType: "notification",
+      // notification(リマインダー)方式は予約時刻にスマホへ通知→人が手動公開する仕組みで、
+      // Buffer モバイルアプリの端末リンクが必須。本運用は全チャンネルが端末未リンク
+      // (hasActiveMemberDevice=false)のため notification だと全員が投稿不能になる。
+      // よって全プラットフォームで automatic(API直接公開)を使う。IG/YT/TikTok とも受理を確認済み。
+      schedulingType: "automatic",
       dueAt: time ?? undefined,
       channelId: channelId ?? undefined,
       token: userToken,
