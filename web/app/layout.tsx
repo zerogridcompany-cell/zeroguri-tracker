@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Shippori_Mincho } from "next/font/google";
 import "./globals.css";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
@@ -20,6 +20,16 @@ const mincho = Shippori_Mincho({
 export const metadata: Metadata = {
   title: "ZeroGuri Tracker",
   description: "再生数トラッキング ダッシュボード",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "ZeroGuri",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#044f5a",
 };
 
 // FOUC 回避: localStorage のテーマを paint 前に適用
