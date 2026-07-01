@@ -93,9 +93,14 @@ verify_jwt = true
 verify_jwt = true
 [functions.organizer-payouts]
 verify_jwt = true
+[functions.report-goal]
+verify_jwt = false        # zeroguri-report（ログイン無し）から合言葉で目標本数を保存
 
 [edge_runtime]
 enabled = true
 policy = "oneshot"
 [functions.video-snapshots]
 verify_jwt = true
+
+[analytics]
+enabled = false

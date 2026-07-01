@@ -9,7 +9,7 @@ function jstDayStr(offsetDays: number): string {
 }
 
 export interface PostingSummary {
-  days: { date: string; posted: boolean }[]; // 直近14日（古→新）
+  days: { date: string; posted: boolean; count: number }[]; // 直近14日（古→新, count=当日の投稿本数）
   streak: number; // 連続投稿日数（今日 or 昨日起点で連続して投稿してる日数）
   postedToday: boolean;
   lastPostedDate: string | null;
@@ -37,10 +37,10 @@ export function postingSummary(dates: Set<string>, counts?: Map<string, number>)
     else break;
   }
 
-  const days: { date: string; posted: boolean }[] = [];
+  const days: { date: string; posted: boolean; count: number }[] = [];
   for (let i = 13; i >= 0; i--) {
     const d = jstDayStr(i);
-    days.push({ date: d, posted: dates.has(d) });
+    days.push({ date: d, posted: dates.has(d), count: counts?.get(d) ?? 0 });
   }
 
   let lastPostedDate: string | null = null;

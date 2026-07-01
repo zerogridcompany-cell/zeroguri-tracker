@@ -12,6 +12,11 @@ const config: Config = {
         faint: "var(--faint)",
         line: "var(--line)",
         accent: { DEFAULT: "var(--accent)", 2: "var(--accent-2)" },
+        // 状態色（step-app と同じ Apple システム色）: 達成/未達/未投稿
+        ok: "var(--ok)",
+        ok2: "var(--ok2)",
+        warn: "var(--warn)",
+        bad: "var(--bad)",
         // プラットフォーム識別は折り紙アイコン（グレースケール）で表現するため中立
         platform: { youtube: "var(--sumi)", tiktok: "var(--sumi)", instagram: "var(--sumi)" },
         status: {

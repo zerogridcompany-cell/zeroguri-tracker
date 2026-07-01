@@ -8,8 +8,15 @@ import { useCallback, useEffect, useState } from "react";
 import { functionsUrl } from "@/lib/supabase";
 import { getAccessToken } from "@/lib/auth";
 import { formatYen, formatNumber } from "@/lib/format";
+import { profileUrl } from "@/lib/links";
+import { PlatformIcon } from "@/components/PlatformIcon";
 import { PostingCalendar, type Posting } from "@/components/PostingCalendar";
+import type { Platform } from "@/lib/types";
 
+interface LinkedAccount {
+  platform: Platform;
+  handle: string | null;
+}
 interface RankEntry {
   rank: number;
   userId: string;
@@ -18,6 +25,9 @@ interface RankEntry {
   views: number;
   earnings: number;
   videos: number;
+  goalMin?: number | null;
+  goalMax?: number | null;
+  accounts?: LinkedAccount[];
   posting?: Posting | null;
 }
 interface RankingData {
@@ -107,11 +117,45 @@ export function RankingView() {
                   </div>
                 </button>
 
-                {/* 開いたら: 選択ユーザーの投稿状況 */}
+                {/* 開いたら: 選択ユーザーのSNSリンク + 投稿状況 */}
                 {open && (
-                  <div className="pb-4 pt-1">
+                  <div className="space-y-3 pb-4 pt-1">
+                    {/* SNSリンク（各アカウントのプロフィールへ） */}
+                    {r.accounts && r.accounts.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {r.accounts.map((a, j) => {
+                          const href = profileUrl(a.platform, a.handle);
+                          const label = a.handle ?? a.platform;
+                          return href ? (
+                            <a
+                              key={a.platform + j}
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="zg-capsule inline-flex items-center gap-1.5 hover:text-accent"
+                              title={`${label} を開く`}
+                            >
+                              <PlatformIcon platform={a.platform} size={16} />
+                              {label}
+                            </a>
+                          ) : (
+                            <span
+                              key={a.platform + j}
+                              className="zg-capsule inline-flex items-center gap-1.5"
+                            >
+                              <PlatformIcon platform={a.platform} size={16} />
+                              {label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-faint">SNSアカウントの連携がありません</div>
+                    )}
+
+                    {/* 投稿状況（日別の投稿本数・目標達成で色分け） */}
                     {r.posting ? (
-                      <PostingCalendar posting={r.posting} />
+                      <PostingCalendar posting={r.posting} goalMin={r.goalMin} goalMax={r.goalMax} />
                     ) : (
                       <div className="rounded-xl border border-line p-3 text-center text-[11px] text-faint">
                         投稿状況のデータがありません
