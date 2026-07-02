@@ -135,6 +135,28 @@ export function PostingCalendar({
           );
         })}
       </div>
+
+      {/* 日別マスの色の凡例（最低/最高ベース） */}
+      {hasGoal ? (
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-faint">
+          <span className="flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-sm bg-ok2" />
+            最高達成
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-sm bg-ok" />
+            最低達成
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-sm bg-warn" />
+            投稿あり・最低未満
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-sm bg-bad" />
+            未投稿
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }
