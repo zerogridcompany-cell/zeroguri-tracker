@@ -115,7 +115,7 @@ export function ScheduleCalendar({
                   ? "border-accent bg-accent/10"
                   : evs.length > 0
                     ? "border-line bg-accent/[0.04] hover:border-accent/40"
-                    : "border-transparent hover:bg-line/30")
+                    : "border-transparent hover:bg-line")
               }
             >
               <span

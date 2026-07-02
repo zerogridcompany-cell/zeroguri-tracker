@@ -36,7 +36,7 @@ export function CampaignCard({
   if (groups.length === 0) return null; // 絞り込みで該当なし → この案件は表示しない
   const ended = campaign.status === "ended";
   return (
-    <section className={ended ? "rounded-xl bg-line/30 p-3 opacity-60 grayscale" : ""}>
+    <section className={ended ? "rounded-xl bg-line p-3 opacity-60 grayscale" : ""}>
       {/* ヘッダー: タイトル + 統計 */}
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="flex min-w-0 items-center gap-2 truncate font-sans text-base font-medium text-sumi">

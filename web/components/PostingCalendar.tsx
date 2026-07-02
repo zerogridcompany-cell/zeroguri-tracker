@@ -29,7 +29,7 @@ function heatClass(count: number, maxCount: number): string {
   const max = Math.max(maxCount, 1);
   const ratio = count / max;
   if (ratio <= 0.25) return "bg-accent/30 text-sumi";
-  if (ratio <= 0.5) return "bg-accent/55 text-white";
+  if (ratio <= 0.5) return "bg-accent/55 text-sumi";
   if (ratio <= 0.75) return "bg-accent/75 text-white";
   return "bg-accent text-white";
 }
@@ -75,10 +75,12 @@ export function PostingCalendar({
   return (
     <div className={compact ? "" : "rounded-xl border border-line p-3"}>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="zg-eyebrow-ja">投稿状況{hasGoal ? "" : "（1日あたりの本数）"}</span>
+        <span className="zg-eyebrow-ja shrink-0 whitespace-nowrap">
+          投稿状況{hasGoal ? "" : "（1日あたりの本数）"}
+        </span>
         <div className="flex flex-wrap items-center justify-end gap-2 text-[11px]">
           {hasGoal ? (
-            <span className="rounded-full bg-line/50 px-2 py-0.5 text-faint">
+            <span className="rounded-full bg-line px-2 py-0.5 text-faint">
               目標 最低 <span className="font-display tabular-nums text-sumi">{goalMin ?? "—"}</span>
               {" ・ "}最高 <span className="font-display tabular-nums text-sumi">{goalMax ?? "—"}</span> 本/日
             </span>
@@ -92,7 +94,7 @@ export function PostingCalendar({
           <span
             className={
               "rounded-full px-2 py-0.5 tabular-nums " +
-              (postedToday ? "bg-accent/15 text-accent" : "bg-line/50 text-faint")
+              (postedToday ? "bg-accent/15 text-accent" : "bg-line text-faint")
             }
           >
             {postedToday ? `今日 ${todayCount}本` : "今日 未投稿"}
@@ -127,7 +129,10 @@ export function PostingCalendar({
             >
               <span className="font-display text-[12px] tabular-nums">{d.count > 0 ? d.count : ""}</span>
               <span
-                className={"mt-0.5 text-[8px] tabular-nums " + (d.count > 0 ? "opacity-80" : "text-faint")}
+                className={
+                  "mt-0.5 text-[8px] tabular-nums " +
+                  (hasGoal || d.count > 0 ? "opacity-80" : "text-faint")
+                }
               >
                 {dayNum(d.date)}
               </span>

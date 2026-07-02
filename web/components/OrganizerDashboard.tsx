@@ -392,7 +392,7 @@ export function OrganizerDashboard() {
               {data.campaigns.map((c) => (
                 <div
                   key={c.campaignId}
-                  className={c.status === "ended" ? "rounded-xl bg-line/30 p-3 opacity-60 grayscale" : ""}
+                  className={c.status === "ended" ? "rounded-xl bg-line p-3 opacity-60 grayscale" : ""}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
